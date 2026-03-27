@@ -1,0 +1,350 @@
+/* =============================================
+   QUIZZERD — Register Page Styles
+   Dark theme · Same design system as login
+   ============================================= */
+
+:root {
+    --bg-primary: #0a0b0f;
+    --bg-card: #13151c;
+    --bg-input: #1a1d27;
+    --accent-cyan: #00e5ff;
+    --accent-purple: #7b5ea7;
+    --accent-green: #00ff88;
+    --accent-yellow: #ffd166;
+    --accent-red: #ff6b6b;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8b90a0;
+    --border-color: rgba(255, 255, 255, 0.06);
+    --font-display: 'Orbitron', sans-serif;
+    --font-body: 'Syne', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    padding: 40px 0;
+}
+
+/* ---- Auth Container ---- */
+.auth-container {
+    width: 100%;
+    max-width: 480px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* ---- Glow Orbs ---- */
+.glow-orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(80px);
+    z-index: 0;
+}
+
+.glow-orb-1 {
+    width: 400px;
+    height: 400px;
+    background: rgba(0, 229, 255, 0.04);
+    top: -150px;
+    left: -150px;
+    animation: floatOrb 8s ease-in-out infinite alternate;
+}
+
+.glow-orb-2 {
+    width: 350px;
+    height: 350px;
+    background: rgba(123, 94, 167, 0.04);
+    bottom: -120px;
+    right: -120px;
+    animation: floatOrb 10s ease-in-out infinite alternate-reverse;
+}
+
+/* ---- Auth Card ---- */
+.auth-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 44px 40px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(0, 229, 255, 0.02);
+}
+
+/* ---- Header ---- */
+.auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.logo {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
+}
+
+.tagline {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.auth-header::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+    margin: 18px auto 0;
+    border-radius: 2px;
+}
+
+/* ---- Message ---- */
+.message {
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 0.84rem;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s ease;
+    line-height: 1.5;
+}
+
+.message.error {
+    background: rgba(255, 107, 107, 0.08);
+    border: 1px solid rgba(255, 107, 107, 0.25);
+    color: var(--accent-red);
+}
+
+.message.success {
+    background: rgba(0, 255, 136, 0.08);
+    border: 1px solid rgba(0, 255, 136, 0.25);
+    color: var(--accent-green);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ---- Form ---- */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ---- Name Row (First + Last side by side) ---- */
+.name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+/* ---- Input Group ---- */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: color 0.3s ease;
+}
+
+.input-group:focus-within label {
+    color: var(--accent-cyan);
+}
+
+.input-group input {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 13px 16px;
+    background: var(--bg-input);
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.input-group input::placeholder {
+    color: rgba(139, 144, 160, 0.4);
+    font-weight: 400;
+}
+
+.input-group input:focus {
+    border-color: var(--accent-cyan);
+    box-shadow:
+        0 0 0 3px rgba(0, 229, 255, 0.08),
+        0 0 20px rgba(0, 229, 255, 0.04);
+}
+
+/* ---- Password Wrapper ---- */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 50px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+    padding: 4px;
+    line-height: 1;
+}
+
+.toggle-password:hover {
+    opacity: 0.8;
+}
+
+/* ---- Primary Button ---- */
+.btn-primary {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, var(--accent-cyan), #00b8d4);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    letter-spacing: 2.5px;
+    transition: all 0.3s ease;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 229, 255, 0.25);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-text {
+    transition: opacity 0.2s ease;
+}
+
+.btn-loader {
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(10, 11, 15, 0.2);
+    border-top-color: var(--bg-primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+/* ---- Footer ---- */
+.auth-footer {
+    text-align: center;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border-color);
+}
+
+.auth-footer p {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+}
+
+.auth-footer a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+    text-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+}
+
+/* ---- Animations ---- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes floatOrb {
+    from { transform: translate(0, 0); }
+    to { transform: translate(30px, 20px); }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 32px 22px;
+        border-radius: 16px;
+    }
+
+    .logo {
+        font-size: 1.75rem;
+        letter-spacing: 3px;
+    }
+
+    /* Stack name fields vertically on mobile */
+    .name-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .btn-primary {
+        font-size: 0.78rem;
+        letter-spacing: 2px;
+    }
+}

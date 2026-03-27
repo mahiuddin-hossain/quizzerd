@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzerd — Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <a href="dashboard.html" class="nav-logo">QUIZZERD</a>
+        <div class="nav-right">
+            <span class="nav-user" id="navUser">Hello, User</span>
+            <button class="btn-logout" id="logoutBtn">LOGOUT</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome back, <span id="userName" class="highlight">User</span>!</h1>
+            <p class="welcome-subtitle">Your AI-powered quiz dashboard is ready. Full features coming next step.</p>
+        </div>
+
+        <!-- Placeholder Cards -->
+        <div class="placeholder-grid">
+            <div class="placeholder-card">
+                <span class="card-icon">🧠</span>
+                <h3>Generate Quiz</h3>
+                <p>Coming soon</p>
+            </div>
+            <div class="placeholder-card">
+                <span class="card-icon">📊</span>
+                <h3>Quiz History</h3>
+                <p>Coming soon</p>
+            </div>
+            <div class="placeholder-card">
+                <span class="card-icon">🏆</span>
+                <h3>Leaderboard</h3>
+                <p>Coming soon</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/utils.js"></script>
+    <script src="js/dashboard.js"></script>
+
+</body>
+</html>
