@@ -1,7 +1,8 @@
 # 🧠 Quizzerd — AI-Powered Quiz Application
 
 
-<img width="1865" height="907" alt="Screenshot 2026-03-28 131340" src="https://github.com/user-attachments/assets/a90c067d-b411-41b7-a062-280535caaa71" />
+<img width="1865" height="907" alt="Screenshot 2026-03-28 131340" src="https://github.com/user-attachments/assets/a90c067d-b411-41b7-a062-280535caaa71" /><img width="1880" height="917" alt="Screenshot 2026-03-28 214438" src="https://github.com/user-attachments/assets/f6765287-8923-4d5a-8d83-1de82c19f14f" />
+
 <img width="1209" height="680" alt="Screenshot 2026-03-28 131459" src="https://github.com/user-attachments/assets/55795d39-2ef2-4644-8535-a79ef3ad83c7" />
 <img width="1854" height="877" alt="Screenshot 2026-03-28 131705" src="https://github.com/user-attachments/assets/7e8ffac8-cdc9-43ec-a5a0-76536ad9fc20" />
 <img width="1854" height="870" alt="Screenshot 2026-03-28 131656" src="https://github.com/user-attachments/assets/e935f900-683d-497f-b7e9-c5e1a84c8b9a" />
