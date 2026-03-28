@@ -1,4 +1,5 @@
 /**
+ * frontend/js/auth.js
  * =============================================
  * QUIZZERD — Authentication Page Logic
  * =============================================
@@ -84,10 +85,10 @@ async function handleLogin(event) {
         setButtonLoading(loginBtn, true);
 
         // Send login request to backend API
-        const data = await apiRequest('/auth/login', 'POST', {
-            username,
-            password
-        });
+        const data = await apiRequest('/api/auth/login', 'POST', {
+    username,
+    password
+});
 
         // Store authentication token and user data
         setToken(data.token);
@@ -189,13 +190,13 @@ async function handleRegister(event) {
         setButtonLoading(registerBtn, true);
 
         // Send registration request to backend API
-        const data = await apiRequest('/auth/register', 'POST', {
-            first_name: firstName,
-            last_name: lastName,
-            username,
-            email,
-            password
-        });
+        const data = await apiRequest('/api/auth/register', 'POST', {
+    first_name: firstName,
+    last_name: lastName,
+    username,
+    email,
+    password
+});
 
         // Show success message
         showMessage('message', 'Account created! Redirecting to login...', 'success');

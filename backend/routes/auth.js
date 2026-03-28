@@ -1,4 +1,5 @@
 /**
+ * backend/routes/auth.js
  * Quizzerd — Authentication Routes
  * Handles user registration and login.
  * Uses bcrypt for password hashing and JWT for session tokens.

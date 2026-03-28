@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzerd — লিডারবোর্ড</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- শুধুমাত্র Hind Siliguri ফন্ট -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="dashboard.css"> <!-- বেস স্টাইল -->
+    <link rel="stylesheet" href="leaderboard.css"> <!-- লিডারবোর্ডের নির্দিষ্ট স্টাইল -->
+</head>
+<body>
+
+    <!-- Background Glow Orbs -->
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    
+        <!-- ===== TOP NAVBAR (Unified for All Pages) ===== -->
+    <nav class="navbar">
+        <a href="dashboard.html" class="nav-logo">QUIZZERD</a>
+        
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">
+                <span class="nav-icon">⊞</span><span>ড্যাশবোর্ড</span>
+            </a>
+            <a href="explore.html" class="nav-link">
+                <span class="nav-icon">✦</span><span>এক্সপ্লোর</span>
+            </a>
+            <a href="leaderboard.html" class="nav-link">
+                <span class="nav-icon">◈</span><span>লিডারবোর্ড</span>
+            </a>
+            <a href="bookmarks.html" class="nav-link">
+                <span class="nav-icon">🔖</span><span>বুকমার্কস</span>
+            </a>
+        </div>
+
+        <div class="nav-right">
+            <!-- User Menu Container (Dropdown) -->
+            <div class="user-menu-container">
+                <div class="nav-user-badge" id="userMenuBtn">
+                    <div class="user-avatar" id="userAvatar">M</div>
+                    <span class="nav-user-name" id="navUserName">ব্যবহারকারী</span>
+                    <span class="dropdown-icon">▼</span>
+                </div>
+                
+                <!-- Dropdown Popup -->
+                <div class="user-dropdown hidden" id="userDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-name" id="dropUserName">ব্যবহারকারীর নাম</div>
+                        <div class="dropdown-email" id="dropUserEmail">user@example.com</div>
+                    </div>
+                    <hr class="dropdown-divider">
+                    <button class="dropdown-item logout-item" id="dropdownLogoutBtn">
+                        <span class="icon">🚪</span> লগআউট
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hamburger Menu -->
+        <button class="nav-hamburger" id="navHamburger">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- ===== MOBILE NAV MENU (Unified for All Pages) ===== -->
+    <div class="mobile-nav" id="mobileNav">
+        <a href="dashboard.html" class="mobile-nav-link">⊞ ড্যাশবোর্ড</a>
+        <a href="explore.html" class="mobile-nav-link">✦ এক্সপ্লোর</a>
+        <a href="leaderboard.html" class="mobile-nav-link">◈ লিডারবোর্ড</a>
+        <a href="bookmarks.html" class="mobile-nav-link">🔖 বুকমার্কস</a>
+        <button class="mobile-logout" id="mobileLogoutBtn">লগআউট</button>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <div class="section-header">
+            <h2 class="section-title"><span class="title-icon">🏆</span> শীর্ষ পারফর্মার</h2>
+            <p class="section-subtitle">সবচেয়ে বেশি পয়েন্ট অর্জনকারী সেরাদের তালিকা</p>
+        </div>
+
+        <!-- Loading State -->
+        <div class="leaderboard-loading" id="lbLoading">
+            <div class="loader-dots" style="margin: 50px auto;"><span></span><span></span><span></span></div>
+        </div>
+
+        <div id="leaderboardContent" class="hidden">
+            <!-- Podium (Top 3) -->
+            <div class="podium-container" id="podiumContainer">
+                <!-- JS এর মাধ্যমে রেন্ডার হবে -->
+            </div>
+
+            <!-- List (Rank 4+) -->
+            <div class="leaderboard-list" id="leaderboardList">
+                <!-- JS এর মাধ্যমে রেন্ডার হবে -->
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="recent-empty hidden" id="lbEmpty">
+            <span class="empty-icon">🤷‍♂️</span>
+            <p class="empty-title">লিডারবোর্ড ফাঁকা!</p>
+            <p class="empty-sub">কুইজ খেলে তুমিই প্রথম স্থান দখল করো।</p>
+        </div>
+    </main>
+
+    <script src="js/utils.js"></script>
+    <script src="js/leaderboard.js"></script>
+</body>
+</html>

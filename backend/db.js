@@ -1,4 +1,5 @@
 /**
+ * backend/db.js
  * Quizzerd — Database Connection Module
  * Creates a MySQL connection pool using mysql2 with promise support.
  * Connection pool reuses connections for better performance.
@@ -21,4 +22,7 @@ const pool = mysql.createPool({
 // Export promise-based pool for async/await usage
 const promisePool = pool.promise();
 
+module.exports = promisePool;
+
+promisePool.getConnection = () => pool.promise().getConnection();
 module.exports = promisePool;

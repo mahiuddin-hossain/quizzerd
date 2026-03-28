@@ -1,52 +1,42 @@
 /**
+ * frontend/js/utils.js
  * =============================================
  * QUIZZERD — Shared Utility Functions
  * =============================================
  * Contains reusable helper functions used across all pages.
- * Implements DRY (Don't Repeat Yourself) principle.
  */
 
 // Base URL for all API requests
-const API_BASE = 'http://localhost:3000/api';
+// dashboard.js এ যেহেতু /api পাথ সহ কল করা হয়, তাই এখানে শুধু পোর্ট পর্যন্ত রাখা হলো
+const API_BASE = 'http://localhost:3000'; 
 
 // ---- Token Management (localStorage + Cookie) ----
 
-/**
- * Store JWT token in both localStorage and cookie for persistence
- * @param {string} token - JWT authentication token
- */
 function setToken(token) {
     try {
         localStorage.setItem('quizzerd_token', token);
-        // Set cookie with 24-hour expiry and secure flags
         document.cookie = `quizzerd_token=${token}; path=/; max-age=${24 * 60 * 60}; SameSite=Strict`;
     } catch (error) {
         console.error('Error storing token:', error);
     }
 }
 
-/**
- * Retrieve JWT token from localStorage
- * @returns {string|null} The stored token or null if not found
- */
 function getToken() {
     try {
-        return localStorage.getItem('quizzerd_token');
+        // চেকিং: নতুন নাম অথবা পুরনো নাম (backward compatibility)
+        return localStorage.getItem('quizzerd_token') || localStorage.getItem('token');
     } catch (error) {
         console.error('Error retrieving token:', error);
         return null;
     }
 }
 
-/**
- * Remove JWT token and user data from all storage locations
- * Used during logout to clear all session data
- */
 function removeToken() {
     try {
         localStorage.removeItem('quizzerd_token');
+        localStorage.removeItem('token'); // পুরনোটা থাকলে মুছে ফেলবে
         localStorage.removeItem('quizzerd_user');
-        // Expire the cookie immediately by setting max-age to 0
+        localStorage.removeItem('user');
         document.cookie = 'quizzerd_token=; path=/; max-age=0';
     } catch (error) {
         console.error('Error removing token:', error);
@@ -55,10 +45,6 @@ function removeToken() {
 
 // ---- User Data Management ----
 
-/**
- * Store user profile data in localStorage as JSON
- * @param {Object} user - User object { id, first_name, last_name, username, email }
- */
 function setUser(user) {
     try {
         localStorage.setItem('quizzerd_user', JSON.stringify(user));
@@ -67,13 +53,9 @@ function setUser(user) {
     }
 }
 
-/**
- * Retrieve stored user profile data
- * @returns {Object|null} Parsed user object or null
- */
 function getUser() {
     try {
-        const data = localStorage.getItem('quizzerd_user');
+        const data = localStorage.getItem('quizzerd_user') || localStorage.getItem('user');
         return data ? JSON.parse(data) : null;
     } catch (error) {
         console.error('Error retrieving user data:', error);
@@ -81,30 +63,24 @@ function getUser() {
     }
 }
 
+// [COMPATIBILITY] dashboard.js এর জন্য saveUser ফাংশন
+function saveUser(token, user) {
+    setToken(token);
+    setUser(user);
+}
+
 // ---- Authentication Checks ----
 
-/**
- * Check if user has an active authentication token
- * @returns {boolean} True if token exists
- */
 function isAuthenticated() {
     return !!getToken();
 }
 
-/**
- * Redirect to login page if user is NOT authenticated
- * Call this on protected pages (dashboard, quiz, etc.)
- */
 function requireAuth() {
     if (!isAuthenticated()) {
         window.location.href = 'login.html';
     }
 }
 
-/**
- * Redirect to dashboard if user IS already authenticated
- * Call this on login/register pages to skip re-authentication
- */
 function redirectIfAuth() {
     if (isAuthenticated()) {
         window.location.href = 'dashboard.html';
@@ -113,12 +89,6 @@ function redirectIfAuth() {
 
 // ---- UI Message Display ----
 
-/**
- * Display a styled message (error or success) in a message container
- * @param {string} elementId - ID of the message container element
- * @param {string} text - Message text to display
- * @param {string} type - Message type: 'error' or 'success'
- */
 function showMessage(elementId, text, type = 'error') {
     const element = document.getElementById(elementId);
     if (!element) return;
@@ -127,16 +97,11 @@ function showMessage(elementId, text, type = 'error') {
     element.className = `message ${type}`;
     element.classList.remove('hidden');
 
-    // Auto-hide success messages after 5 seconds
     if (type === 'success') {
         setTimeout(() => hideMessage(elementId), 5000);
     }
 }
 
-/**
- * Hide a message container element
- * @param {string} elementId - ID of the message container
- */
 function hideMessage(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -144,61 +109,82 @@ function hideMessage(elementId) {
     }
 }
 
+// [COMPATIBILITY] dashboard.js এর জন্য showToast ফাংশন
+function showToast(message, type = 'info') {
+    // এখানে আমরা সিম্পল অ্যালার্ট বা কনসোল লগ ব্যবহার করছি
+    // তুমি চাইলে সুন্দর কোনো টোস্ট লাইব্রেরি বা কাস্টম ডিভ ব্যবহার করতে পারো
+    console.log(`[${type.toUpperCase()}] ${message}`);
+    
+    // যদি UI তে দেখানোর ব্যবস্থা না থাকে, তবে আপাতত অ্যালার্ট
+    if (type === 'error') {
+        alert('⚠️ ' + message);
+    } else {
+        // Success মেসেজ বারবার অ্যালার্ট করলে বিরক্তিকর হতে পারে, তাই শুধু কনসোলে বা ছোট পপআপে
+        // alert('✅ ' + message); 
+    }
+}
+
 // ---- API Request Helper ----
 
 /**
- * Make an HTTP request to the backend API with proper headers and error handling
- * Automatically includes JWT token for authenticated requests
- * @param {string} endpoint - API endpoint path (e.g., '/auth/login')
- * @param {string} method - HTTP method (GET, POST, PUT, DELETE)
- * @param {Object|null} body - Request body data (for POST/PUT)
- * @returns {Promise<Object>} Parsed JSON response data
- * @throws {Error} If the request fails or returns an error status
+ * [CORE FUNCTION] apiRequest
+ * তোমার আগের কোড অনুযায়ী
  */
 async function apiRequest(endpoint, method = 'GET', body = null) {
-    // Set up request headers
+    return apiFetch(endpoint, {
+        method: method,
+        body: body ? JSON.stringify(body) : null
+    });
+}
+
+/**
+ * [COMPATIBILITY] apiFetch
+ * dashboard.js এই ফাংশনটিই কল করছে। এটি fetch এর মতো কাজ করে কিন্তু অটোমেটিক টোকেন বসায়।
+ */
+async function apiFetch(endpoint, options = {}) {
     const headers = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...options.headers
     };
 
-    // Attach JWT token if user is authenticated
     const token = getToken();
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
-    // Build fetch options
-    const options = { method, headers };
+    const config = {
+        ...options,
+        headers
+    };
 
-    // Attach body for non-GET requests
-    if (body && method !== 'GET') {
-        options.body = JSON.stringify(body);
+    try {
+        // URL হ্যান্ডলিং: ড্যাশবোর্ড থেকে /api পাঠানো হলে সেটা ঠিক রাখা
+        const url = `${API_BASE}${endpoint}`;
+        
+        const response = await fetch(url, config);
+        
+        // 401 Unauthorized হলে লগআউট
+        if (response.status === 401 && !endpoint.includes('/auth/')) {
+            removeToken();
+            window.location.href = 'login.html';
+            throw new Error('Session expired');
+        }
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Something went wrong.');
+        }
+
+        return data;
+    } catch (error) {
+        console.error('API Fetch Error:', error);
+        throw error;
     }
-
-    // Execute fetch request
-    const response = await fetch(`${API_BASE}${endpoint}`, options);
-    const data = await response.json();
-
-    // If server returns 401 (unauthorized) on a protected route, force logout
-    if (response.status === 401 && !endpoint.includes('/auth/')) {
-        removeToken();
-        window.location.href = 'login.html';
-        return;
-    }
-
-    // Throw error if response is not OK (4xx or 5xx status)
-    if (!response.ok) {
-        throw new Error(data.error || 'Something went wrong. Please try again.');
-    }
-
-    return data;
 }
 
 // ---- Logout ----
 
-/**
- * Log the user out by clearing all stored data and redirecting to login
- */
 function logout() {
     removeToken();
     window.location.href = 'login.html';
@@ -206,11 +192,6 @@ function logout() {
 
 // ---- Validation Helpers ----
 
-/**
- * Validate email format using regex
- * @param {string} email - Email string to validate
- * @returns {boolean} True if email format is valid
- */
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -218,14 +199,11 @@ function isValidEmail(email) {
 
 // ---- Button Loading State ----
 
-/**
- * Toggle loading state on a submit button (show spinner, disable button)
- * @param {HTMLElement} button - The button element
- * @param {boolean} loading - True to show loading, false to restore
- */
 function setButtonLoading(button, loading) {
-    const btnText = button.querySelector('.btn-text');
-    const btnLoader = button.querySelector('.btn-loader');
+    if (!button) return;
+    
+    const btnText = button.querySelector('.btn-text') || button.querySelector('.btn-generate-text');
+    const btnLoader = button.querySelector('.btn-loader') || button.querySelector('.btn-generate-loader');
 
     if (loading) {
         button.disabled = true;

@@ -1,4 +1,5 @@
 -- =============================================
+-- database/schema.sql
 -- QUIZZERD Database Schema
 -- Run this in XAMPP phpMyAdmin if not yet created
 -- =============================================

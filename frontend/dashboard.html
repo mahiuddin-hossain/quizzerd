@@ -1,56 +1,314 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quizzerd — Dashboard</title>
+    <title>Quizzerd — ড্যাশবোর্ড</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="dashboard.css">
 </head>
+
 <body>
 
-    <!-- Top Navigation Bar -->
+    <!-- Background Glow Orbs -->
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+
+    <!-- ===== TOP NAVBAR (Unified for All Pages) ===== -->
     <nav class="navbar">
         <a href="dashboard.html" class="nav-logo">QUIZZERD</a>
-        <div class="nav-right">
-            <span class="nav-user" id="navUser">Hello, User</span>
-            <button class="btn-logout" id="logoutBtn">LOGOUT</button>
+
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">
+                <span class="nav-icon">⊞</span><span>ড্যাশবোর্ড</span>
+            </a>
+            <a href="explore.html" class="nav-link">
+                <span class="nav-icon">✦</span><span>এক্সপ্লোর</span>
+            </a>
+            <a href="leaderboard.html" class="nav-link">
+                <span class="nav-icon">◈</span><span>লিডারবোর্ড</span>
+            </a>
+            <a href="bookmarks.html" class="nav-link">
+                <span class="nav-icon">🔖</span><span>বুকমার্কস</span>
+            </a>
         </div>
+
+        <div class="nav-right">
+            <!-- User Menu Container (Dropdown) -->
+            <div class="user-menu-container">
+                <div class="nav-user-badge" id="userMenuBtn">
+                    <div class="user-avatar" id="userAvatar">M</div>
+                    <span class="nav-user-name" id="navUserName">ব্যবহারকারী</span>
+                    <span class="dropdown-icon">▼</span>
+                </div>
+
+                <!-- Dropdown Popup -->
+                <div class="user-dropdown hidden" id="userDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-name" id="dropUserName">ব্যবহারকারীর নাম</div>
+                        <div class="dropdown-email" id="dropUserEmail">user@example.com</div>
+                    </div>
+                    <hr class="dropdown-divider">
+                    <button class="dropdown-item logout-item" id="dropdownLogoutBtn">
+                        <span class="icon">🚪</span> লগআউট
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hamburger Menu -->
+        <button class="nav-hamburger" id="navHamburger">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="welcome-section">
-            <h1 class="welcome-title">Welcome back, <span id="userName" class="highlight">User</span>!</h1>
-            <p class="welcome-subtitle">Your AI-powered quiz dashboard is ready. Full features coming next step.</p>
-        </div>
+    <!-- ===== MOBILE NAV MENU (Unified for All Pages) ===== -->
+    <div class="mobile-nav" id="mobileNav">
+        <a href="dashboard.html" class="mobile-nav-link">⊞ ড্যাশবোর্ড</a>
+        <a href="explore.html" class="mobile-nav-link">✦ এক্সপ্লোর</a>
+        <a href="leaderboard.html" class="mobile-nav-link">◈ লিডারবোর্ড</a>
+        <a href="bookmarks.html" class="mobile-nav-link">🔖 বুকমার্কস</a>
+        <button class="mobile-logout" id="mobileLogoutBtn">লগআউট</button>
+    </div>
 
-        <!-- Placeholder Cards -->
-        <div class="placeholder-grid">
-            <div class="placeholder-card">
-                <span class="card-icon">🧠</span>
-                <h3>Generate Quiz</h3>
-                <p>Coming soon</p>
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-text">
+                <p class="welcome-greeting">স্বাগতম,</p>
+                <h1 class="welcome-title"><span id="userName" class="highlight">বন্ধু</span> — আজ কী শিখবে? 🚀</h1>
             </div>
-            <div class="placeholder-card">
-                <span class="card-icon">📊</span>
-                <h3>Quiz History</h3>
-                <p>Coming soon</p>
+            <div class="welcome-stats">
+                <div class="stat-chip">
+                    <span class="stat-chip-value" id="statScore">০</span>
+                    <span class="stat-chip-label">মোট পয়েন্ট</span>
+                </div>
+                <div class="stat-chip">
+                    <span class="stat-chip-value" id="statQuizzes">০</span>
+                    <span class="stat-chip-label">কুইজ দেওয়া</span>
+                </div>
+                <div class="stat-chip stat-chip-green">
+                    <span class="stat-chip-value" id="statCorrect">০%</span>
+                    <span class="stat-chip-label">সঠিক উত্তর</span>
+                </div>
             </div>
-            <div class="placeholder-card">
-                <span class="card-icon">🏆</span>
-                <h3>Leaderboard</h3>
-                <p>Coming soon</p>
+        </section>
+
+        <!-- ===== QUIZ GENERATOR SECTION ===== -->
+        <section class="generator-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="title-icon">✦</span>
+                    কুইজ তৈরি করো
+                </h2>
+                <p class="section-subtitle">বিষয় বেছে নাও অথবা নিজের মনের মতো প্রম্পট লেখো</p>
             </div>
-        </div>
+
+            <!-- Category Cards -->
+            <div class="category-grid">
+
+                <div class="category-card" data-category="ssc" data-label="SSC প্রস্তুতি">
+                    <div class="cat-glow"></div>
+                    <span class="cat-emoji">📚</span>
+                    <h3 class="cat-title">SSC</h3>
+                    <p class="cat-sub">প্রস্তুতি</p>
+                    <div class="cat-sub-tags" id="ssc-subs">
+                        <span class="sub-tag" data-subject="বাংলা" data-category="ssc">বাংলা</span>
+                        <span class="sub-tag" data-subject="গণিত" data-category="ssc">গণিত</span>
+                        <span class="sub-tag" data-subject="বিজ্ঞান" data-category="ssc">বিজ্ঞান</span>
+                        <span class="sub-tag" data-subject="ইংরেজি" data-category="ssc">ইংরেজি</span>
+                        <span class="sub-tag" data-subject="সামাজিক বিজ্ঞান" data-category="ssc">সমাজ</span>
+                        <span class="sub-tag" data-subject="ইতিহাস" data-category="ssc">ইতিহাস</span>
+                    </div>
+                </div>
+
+                <div class="category-card" data-category="hsc" data-label="HSC প্রস্তুতি">
+                    <div class="cat-glow"></div>
+                    <span class="cat-emoji">🎓</span>
+                    <h3 class="cat-title">HSC</h3>
+                    <p class="cat-sub">প্রস্তুতি</p>
+                    <div class="cat-sub-tags">
+                        <span class="sub-tag" data-subject="পদার্থবিজ্ঞান" data-category="hsc">পদার্থ</span>
+                        <span class="sub-tag" data-subject="রসায়ন" data-category="hsc">রসায়ন</span>
+                        <span class="sub-tag" data-subject="জীববিজ্ঞান" data-category="hsc">জীববিজ্ঞান</span>
+                        <span class="sub-tag" data-subject="উচ্চতর গণিত" data-category="hsc">গণিত</span>
+                        <span class="sub-tag" data-subject="হিসাববিজ্ঞান" data-category="hsc">হিসাব</span>
+                        <span class="sub-tag" data-subject="অর্থনীতি" data-category="hsc">অর্থনীতি</span>
+                    </div>
+                </div>
+
+                <div class="category-card" data-category="bcs" data-label="BCS প্রস্তুতি">
+                    <div class="cat-glow"></div>
+                    <span class="cat-emoji">🏛️</span>
+                    <h3 class="cat-title">BCS</h3>
+                    <p class="cat-sub">প্রস্তুতি</p>
+                    <div class="cat-sub-tags">
+                        <span class="sub-tag" data-subject="বাংলাদেশ বিষয়াবলি" data-category="bcs">বাংলাদেশ</span>
+                        <span class="sub-tag" data-subject="আন্তর্জাতিক বিষয়াবলি"
+                            data-category="bcs">আন্তর্জাতিক</span>
+                        <span class="sub-tag" data-subject="বাংলা ভাষা ও সাহিত্য" data-category="bcs">বাংলা</span>
+                        <span class="sub-tag" data-subject="English Literature" data-category="bcs">English</span>
+                        <span class="sub-tag" data-subject="গণিত ও মানসিক দক্ষতা" data-category="bcs">গণিত</span>
+                        <span class="sub-tag" data-subject="বিজ্ঞান ও প্রযুক্তি" data-category="bcs">বিজ্ঞান</span>
+                    </div>
+                </div>
+
+                <div class="category-card" data-category="medical" data-label="মেডিকেল ভর্তি">
+                    <div class="cat-glow"></div>
+                    <span class="cat-emoji">🩺</span>
+                    <h3 class="cat-title">মেডিকেল</h3>
+                    <p class="cat-sub">ভর্তি পরীক্ষা</p>
+                    <div class="cat-sub-tags">
+                        <span class="sub-tag" data-subject="Human Anatomy" data-category="medical">Anatomy</span>
+                        <span class="sub-tag" data-subject="Human Physiology" data-category="medical">Physiology</span>
+                        <span class="sub-tag" data-subject="Biochemistry" data-category="medical">Biochemistry</span>
+                        <span class="sub-tag" data-subject="Biology MCQ" data-category="medical">Biology</span>
+                        <span class="sub-tag" data-subject="Chemistry for Medical"
+                            data-category="medical">Chemistry</span>
+                        <span class="sub-tag" data-subject="Physics for Medical" data-category="medical">Physics</span>
+                    </div>
+                </div>
+
+                <div class="category-card" data-category="gk" data-label="সাধারণ জ্ঞান">
+                    <div class="cat-glow"></div>
+                    <span class="cat-emoji">🌍</span>
+                    <h3 class="cat-title">সাধারণ জ্ঞান</h3>
+                    <p class="cat-sub">General Knowledge</p>
+                    <div class="cat-sub-tags">
+                        <span class="sub-tag" data-subject="বাংলাদেশের ইতিহাস" data-category="gk">ইতিহাস</span>
+                        <span class="sub-tag" data-subject="বিশ্ব ভূগোল" data-category="gk">ভূগোল</span>
+                        <span class="sub-tag" data-subject="বিজ্ঞান ও প্রযুক্তি" data-category="gk">প্রযুক্তি</span>
+                        <span class="sub-tag" data-subject="খেলাধুলা" data-category="gk">খেলাধুলা</span>
+                        <span class="sub-tag" data-subject="চলচ্চিত্র ও সংস্কৃতি" data-category="gk">সংস্কৃতি</span>
+                        <span class="sub-tag" data-subject="সাম্প্রতিক ঘটনা" data-category="gk">সাম্প্রতিক</span>
+                    </div>
+                </div>
+
+                <div class="category-card" data-category="cse" data-label="CSE / প্রোগ্রামিং">
+                    <div class="cat-glow"></div>
+                    <span class="cat-emoji">💻</span>
+                    <h3 class="cat-title">CSE</h3>
+                    <p class="cat-sub">প্রোগ্রামিং</p>
+                    <div class="cat-sub-tags">
+                        <span class="sub-tag" data-subject="Python Programming" data-category="cse">Python</span>
+                        <span class="sub-tag" data-subject="JavaScript" data-category="cse">JavaScript</span>
+                        <span class="sub-tag" data-subject="Data Structures" data-category="cse">DSA</span>
+                        <span class="sub-tag" data-subject="Database & SQL" data-category="cse">SQL</span>
+                        <span class="sub-tag" data-subject="Computer Networks" data-category="cse">Networks</span>
+                        <span class="sub-tag" data-subject="Operating Systems" data-category="cse">OS</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Generator Form -->
+            <div class="generator-form-card">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">✦ নির্বাচিত বিষয়</label>
+                        <input type="text" id="subjectInput" class="form-input"
+                            placeholder="কোনো ক্যাটাগরি বেছে নাও অথবা নিজে লেখো..." readonly>
+                        <button class="clear-subject" id="clearSubject" title="মুছো">✕</button>
+                    </div>
+                    <div class="form-group form-group-small">
+                        <label class="form-label">প্রশ্নের সংখ্যা</label>
+                        <select id="questionCount" class="form-input form-select">
+                            <option value="5">৫টি প্রশ্ন</option>
+                            <option value="10" selected>১০টি প্রশ্ন</option>
+                            <option value="15">১৫টি প্রশ্ন</option>
+                            <option value="20">২০টি প্রশ্ন</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-group-small">
+                        <label class="form-label">কঠিনত্ব</label>
+                        <select id="difficultySelect" class="form-input form-select">
+                            <option value="easy">সহজ</option>
+                            <option value="medium" selected>মাঝারি</option>
+                            <option value="hard">কঠিন</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">💬 কাস্টম প্রম্পট (ঐচ্ছিক)</label>
+                    <textarea id="customPrompt" class="form-input form-textarea"
+                        placeholder="যেমন: মুক্তিযুদ্ধের গুরুত্বপূর্ণ তারিখ ও ঘটনা নিয়ে প্রশ্ন তৈরি করো..."></textarea>
+                </div>
+
+                <!-- Generate Button -->
+                <button class="btn-generate" id="generateBtn">
+                    <span class="btn-generate-text">✦ কুইজ তৈরি করো</span>
+                    <span class="btn-generate-loader hidden">
+                        <span class="loader-dots">
+                            <span></span><span></span><span></span>
+                        </span>
+                    </span>
+                </button>
+            </div>
+
+            <!-- Generating Progress Overlay -->
+            <div class="generating-overlay hidden" id="generatingOverlay">
+                <div class="generating-card">
+                    <div class="gen-animation">
+                        <div class="gen-ring gen-ring-1"></div>
+                        <div class="gen-ring gen-ring-2"></div>
+                        <div class="gen-ring gen-ring-3"></div>
+                        <span class="gen-icon">🧠</span>
+                    </div>
+                    <h3 class="gen-title">AI কুইজ তৈরি করছে...</h3>
+                    <p class="gen-subject" id="genSubjectText">বিষয় লোড হচ্ছে</p>
+                    <div class="gen-progress-bar">
+                        <div class="gen-progress-fill" id="genProgressFill"></div>
+                    </div>
+                    <p class="gen-status" id="genStatusText">প্রশ্ন তৈরি করা হচ্ছে...</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ===== RECENT QUIZZES SECTION ===== -->
+        <section class="recent-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="title-icon">◈</span>
+                    সাম্প্রতিক কুইজ
+                </h2>
+                <a href="history.html" class="view-all-link">সব দেখো →</a>
+            </div>
+
+            <!-- Loading State -->
+            <div class="recent-loading" id="recentLoading">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+
+            <!-- Quiz List -->
+            <div class="recent-list" id="recentList"></div>
+
+            <!-- Empty State -->
+            <div class="recent-empty hidden" id="recentEmpty">
+                <span class="empty-icon">📭</span>
+                <p class="empty-title">এখনো কোনো কুইজ দেওয়া হয়নি</p>
+                <p class="empty-sub">উপরে বিষয় বেছে নিয়ে প্রথম কুইজ শুরু করো!</p>
+            </div>
+        </section>
+
     </main>
 
     <script src="js/utils.js"></script>
     <script src="js/dashboard.js"></script>
 
 </body>
+
 </html>

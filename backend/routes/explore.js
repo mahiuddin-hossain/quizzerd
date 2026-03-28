@@ -1,0 +1,73 @@
+const express = require('express');
+const db = require('../db');
+const { verifyToken } = require('../middleware/auth');
+
+const router = express.Router();
+
+// =============================================
+// GET /api/explore/trending
+// সবচেয়ে বেশিবার খেলা হওয়া টপ ৩টি কুইজ আনবে
+// =============================================
+router.get('/trending', verifyToken, async (req, res) => {
+    try {
+        const query = `
+            SELECT q.id, q.subject, q.difficulty, q.created_at, u.username, 
+                   COUNT(a.id) as attempt_count,
+                   (SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) as total_questions
+            FROM quizzes q
+            JOIN users u ON q.user_id = u.id
+            LEFT JOIN attempts a ON q.id = a.quiz_id
+            GROUP BY q.id
+            HAVING total_questions > 0
+            ORDER BY attempt_count DESC, q.created_at DESC
+            LIMIT 3
+        `;
+        const [rows] = await db.execute(query);
+        res.json(rows);
+    } catch (error) {
+        console.error('Trending fetch error:', error);
+        res.status(500).json({ error: 'ট্রেন্ডিং কুইজ লোড করতে সমস্যা হয়েছে।' });
+    }
+});
+
+// =============================================
+// GET /api/explore/quizzes
+// সার্চ এবং ফিল্টার সহ সব কুইজ আনবে
+// =============================================
+router.get('/quizzes', verifyToken, async (req, res) => {
+    try {
+        const search = req.query.search || '';
+        const difficulty = req.query.difficulty || 'all';
+
+        let query = `
+            SELECT q.id, q.subject, q.difficulty, q.created_at, u.username, 
+                   COUNT(a.id) as attempt_count,
+                   (SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) as total_questions
+            FROM quizzes q
+            JOIN users u ON q.user_id = u.id
+            LEFT JOIN attempts a ON q.id = a.quiz_id
+            WHERE q.subject LIKE ?
+        `;
+        const queryParams = [`%${search}%`];
+
+        if (difficulty !== 'all') {
+            query += ` AND q.difficulty = ?`;
+            queryParams.push(difficulty);
+        }
+
+        query += `
+            GROUP BY q.id
+            HAVING total_questions > 0
+            ORDER BY q.created_at DESC
+            LIMIT 20
+        `;
+
+        const [rows] = await db.execute(query, queryParams);
+        res.json(rows);
+    } catch (error) {
+        console.error('Explore fetch error:', error);
+        res.status(500).json({ error: 'কুইজ লোড করতে সমস্যা হয়েছে।' });
+    }
+});
+
+module.exports = router;

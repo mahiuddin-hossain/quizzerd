@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzerd — এক্সপ্লোর</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="explore.css">
+</head>
+
+<body>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <!-- ===== TOP NAVBAR (Unified for All Pages) ===== -->
+    <nav class="navbar">
+        <a href="dashboard.html" class="nav-logo">QUIZZERD</a>
+
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">
+                <span class="nav-icon">⊞</span><span>ড্যাশবোর্ড</span>
+            </a>
+            <a href="explore.html" class="nav-link">
+                <span class="nav-icon">✦</span><span>এক্সপ্লোর</span>
+            </a>
+            <a href="leaderboard.html" class="nav-link">
+                <span class="nav-icon">◈</span><span>লিডারবোর্ড</span>
+            </a>
+            <a href="bookmarks.html" class="nav-link">
+                <span class="nav-icon">🔖</span><span>বুকমার্কস</span>
+            </a>
+        </div>
+
+        <div class="nav-right">
+            <!-- User Menu Container (Dropdown) -->
+            <div class="user-menu-container">
+                <div class="nav-user-badge" id="userMenuBtn">
+                    <div class="user-avatar" id="userAvatar">M</div>
+                    <span class="nav-user-name" id="navUserName">ব্যবহারকারী</span>
+                    <span class="dropdown-icon">▼</span>
+                </div>
+
+                <!-- Dropdown Popup -->
+                <div class="user-dropdown hidden" id="userDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-name" id="dropUserName">ব্যবহারকারীর নাম</div>
+                        <div class="dropdown-email" id="dropUserEmail">user@example.com</div>
+                    </div>
+                    <hr class="dropdown-divider">
+                    <button class="dropdown-item logout-item" id="dropdownLogoutBtn">
+                        <span class="icon">🚪</span> লগআউট
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hamburger Menu -->
+        <button class="nav-hamburger" id="navHamburger">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- ===== MOBILE NAV MENU (Unified for All Pages) ===== -->
+    <div class="mobile-nav" id="mobileNav">
+        <a href="dashboard.html" class="mobile-nav-link">⊞ ড্যাশবোর্ড</a>
+        <a href="explore.html" class="mobile-nav-link">✦ এক্সপ্লোর</a>
+        <a href="leaderboard.html" class="mobile-nav-link">◈ লিডারবোর্ড</a>
+        <a href="bookmarks.html" class="mobile-nav-link">🔖 বুকমার্কস</a>
+        <button class="mobile-logout" id="mobileLogoutBtn">লগআউট</button>
+    </div>
+
+    <main class="explore-main">
+        <!-- HEADER & SEARCH -->
+        <div class="explore-header">
+            <h1 class="explore-title">কমিউনিটি কুইজ এক্সপ্লোর করো 🌍</h1>
+            <p class="explore-sub">অন্যদের তৈরি করা হাজারো কুইজ থেকে নিজের পছন্দের কুইজটি খুঁজে নাও এবং খেলা শুরু করো!
+            </p>
+
+            <div class="search-bar-container">
+                <input type="text" id="searchInput" class="search-input"
+                    placeholder="কুইজের বিষয় খুঁজুন (যেমন: Science, Math)...">
+                <select id="filterDifficulty" class="filter-select">
+                    <option value="all">সব কাঠিন্য</option>
+                    <option value="easy">সহজ (Easy)</option>
+                    <option value="medium">মাঝারি (Medium)</option>
+                    <option value="hard">কঠিন (Hard)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- TRENDING SECTION -->
+        <section class="explore-section" id="trendingSection">
+            <h2 class="section-title">🔥 ট্রেন্ডিং কুইজ</h2>
+            <div class="quiz-grid" id="trendingGrid">
+                <!-- Trending Quizzes Will Load Here -->
+                <p style="color:var(--text-dim);">লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+        <!-- ALL QUIZZES SECTION -->
+        <section class="explore-section">
+            <h2 class="section-title">📚 সব কুইজ</h2>
+            <div class="quiz-grid" id="exploreGrid">
+                <!-- All Quizzes Will Load Here -->
+            </div>
+            <div id="noDataMessage" class="hidden" style="text-align: center; color: var(--text-dim); padding: 2rem;">
+                কোনো কুইজ পাওয়া যায়নি! 😢
+            </div>
+        </section>
+    </main>
+
+    <script src="js/utils.js"></script>
+    <script src="js/explore.js"></script>
+</body>
+
+</html>
