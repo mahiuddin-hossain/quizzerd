@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzerd — কুইজ হিস্ট্রি</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css"> <!-- আমরা ড্যাশবোর্ডের ডিজাইন ব্যবহার করব -->
+    <style>
+        .history-main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            position: relative;
+            z-index: 1;
+        
+        }
+
+        .history-header {
+            margin-bottom: 2rem;
+        }
+
+        .history-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .history-sub {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <!-- ===== TOP NAVBAR ===== -->
+    <nav class="navbar">
+        <a href="dashboard.html" class="nav-logo">QUIZZERD</a>
+
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">⊞ ড্যাশবোর্ড</a>
+            <a href="explore.html" class="nav-link">✦ এক্সপ্লোর</a>
+            <a href="leaderboard.html" class="nav-link">◈ লিডারবোর্ড</a>
+            <a href="bookmarks.html" class="nav-link">🔖 বুকমার্কস</a>
+        </div>
+
+        <div class="nav-right">
+            <div class="user-menu-container">
+                <div class="nav-user-badge" id="userMenuBtn">
+                    <div class="user-avatar" id="userAvatar">M</div>
+                    <span class="nav-user-name" id="navUserName">ব্যবহারকারী</span>
+                    <span class="dropdown-icon">▼</span>
+                </div>
+
+                <div class="user-dropdown hidden" id="userDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-name" id="dropUserName">নাম</div>
+                        <div class="dropdown-email" id="dropUserEmail">ইমেইল</div>
+                    </div>
+                    <hr class="dropdown-divider">
+                    <button class="dropdown-item logout-item" id="dropdownLogoutBtn">
+                        <span class="icon">🚪</span> লগআউট
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <button class="nav-hamburger" id="navHamburger">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- Mobile Nav Menu -->
+    <div class="mobile-nav" id="mobileNav">
+        <a href="dashboard.html" class="mobile-nav-link">⊞ ড্যাশবোর্ড</a>
+        <a href="explore.html" class="mobile-nav-link">✦ এক্সপ্লোর</a>
+        <a href="leaderboard.html" class="mobile-nav-link">◈ লিডারবোর্ড</a>
+        <a href="bookmarks.html" class="mobile-nav-link">🔖 বুকমার্কস</a>
+        <button class="mobile-logout" id="mobileLogoutBtn">লগআউট</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="history-main">
+        <div class="history-header">
+            <a href="dashboard.html"
+                style="color: var(--accent-cyan); text-decoration: none; font-weight: 600; display: inline-block; margin-bottom: 1rem;">←
+                ড্যাশবোর্ডে ফিরে যাও</a>
+            <h1 class="history-title">📜 আমার কুইজ হিস্ট্রি</h1>
+            <p class="history-sub">তোমার খেলা সকল কুইজের সম্পূর্ণ তালিকা এবং ফলাফল</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="historyLoading" class="loader-dots" style="margin: 50px auto; justify-content: center;">
+            <span></span><span></span><span></span>
+        </div>
+
+        <!-- Quiz List -->
+        <div class="history-list" id="historyList"></div>
+
+        <!-- Empty State -->
+        <div class="recent-empty hidden" id="historyEmpty">
+            <span class="empty-icon">📭</span>
+            <p class="empty-title">এখনো কোনো কুইজ দেওয়া হয়নি</p>
+            <p class="empty-sub">ড্যাশবোর্ড থেকে নতুন কুইজ তৈরি করে খেলা শুরু করো!</p>
+        </div>
+    </main>
+
+    <script src="js/utils.js"></script>
+    <script src="js/history.js"></script>
+</body>
+
+</html>

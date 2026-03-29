@@ -69,12 +69,12 @@ Example JSON format:
             ],
             model: "llama-3.3-70b-versatile",
             temperature: 0.3,
-            response_format: { type: "json_object" } 
+            response_format: { type: "json_object" }
         });
 
         // Parse JSON response
         let responseContent = chatCompletion.choices[0]?.message?.content;
-        
+
         // Safety: Clean any markdown code blocks
         if (responseContent) {
             responseContent = responseContent.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -172,19 +172,19 @@ router.get('/:id', verifyToken, async (req, res) => {
         const questionMap = new Map();
         rows.forEach(row => {
             if (row.question_id && !questionMap.has(row.question_id)) {
-                const qObj = { 
-                    id: row.question_id, 
-                    question_text: row.question_text, 
-                    correct_answer: row.correct_answer, 
-                    options: [] 
+                const qObj = {
+                    id: row.question_id,
+                    question_text: row.question_text,
+                    correct_answer: row.correct_answer,
+                    options: []
                 };
                 questionMap.set(row.question_id, qObj);
                 quizData.questions.push(qObj);
             }
             if (row.option_id && row.question_id) {
-                questionMap.get(row.question_id).options.push({ 
-                    id: row.option_id, 
-                    option_text: row.option_text 
+                questionMap.get(row.question_id).options.push({
+                    id: row.option_id,
+                    option_text: row.option_text
                 });
             }
         });
@@ -215,5 +215,39 @@ router.delete('/:id', verifyToken, async (req, res) => {
         res.status(500).json({ error: 'Server error while deleting quiz.' });
     }
 });
+
+
+// =============================================
+// PUT /api/quizzes/:id
+// Update Quiz Subject and Difficulty (CRUD - Update)
+// =============================================
+router.put('/:id', verifyToken, async (req, res) => {
+    try {
+        const quizId = parseInt(req.params.id);
+        const userId = req.user.id;
+        const { subject, difficulty } = req.body;
+
+        if (!subject || !difficulty) {
+            return res.status(400).json({ error: 'Subject এবং Difficulty দেওয়া আবশ্যক।' });
+        }
+
+        // ডাটাবেসে UPDATE কুয়েরি চালানো
+        const [result] = await db.execute(
+            'UPDATE quizzes SET subject = ?, difficulty = ? WHERE id = ? AND user_id = ?',
+            [subject, difficulty, quizId, userId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'কুইজ পাওয়া যায়নি অথবা আপডেট করার অনুমতি নেই।' });
+        }
+
+        res.json({ message: 'কুইজ সফলভাবে আপডেট হয়েছে!' });
+    } catch (error) {
+        console.error('Update Quiz Error:', error);
+        res.status(500).json({ error: 'সার্ভারে আপডেট করতে সমস্যা হয়েছে।' });
+    }
+});
+
+
 
 module.exports = router;

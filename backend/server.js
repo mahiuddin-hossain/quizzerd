@@ -10,10 +10,10 @@ const path = require('path');
 require('dotenv').config();
 
 // Route modules import করো
-const authRoutes      = require('./routes/auth');
-const usersRoutes     = require('./routes/users');
-const quizzesRoutes   = require('./routes/quizzes');
-const attemptsRoutes  = require('./routes/attempts');
+const authRoutes = require('./routes/auth');
+const usersRoutes = require('./routes/users');
+const quizzesRoutes = require('./routes/quizzes');
+const attemptsRoutes = require('./routes/attempts');
 const leaderboardRoutes = require('./routes/leaderboard');
 const exploreRoutes = require('./routes/explore');
 const bookmarkRoutes = require('./routes/bookmarks');
@@ -30,12 +30,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // ---- API Routes ----
-app.use('/api/auth',        authRoutes);
-app.use('/api/users',       usersRoutes);
-app.use('/api/quizzes',     quizzesRoutes);
-app.use('/api/attempts',    attemptsRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', usersRoutes);
+app.use('/api/quizzes', quizzesRoutes);
+app.use('/api/attempts', attemptsRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
-app.use('/api/explore', exploreRoutes); 
+app.use('/api/explore', exploreRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
 
 // ---- Default Route ----

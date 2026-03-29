@@ -1,21 +1,64 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quizzerd — রিভিউ</title>
-    <!-- শুধুমাত্র Hind Siliguri ফন্ট রাখা হয়েছে -->
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="review.css">
 </head>
+
 <body>
     <div class="glow-orb glow-orb-1"></div>
     <div class="glow-orb glow-orb-2"></div>
 
+    <!-- ===== TOP NAVBAR (Unified) ===== -->
     <nav class="navbar">
         <a href="dashboard.html" class="nav-logo">QUIZZERD</a>
-        <a href="dashboard.html" class="btn-back">← ড্যাশবোর্ডে ফিরে যাও</a>
+
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">⊞ ড্যাশবোর্ড</a>
+            <a href="explore.html" class="nav-link">✦ এক্সপ্লোর</a>
+            <a href="leaderboard.html" class="nav-link">◈ লিডারবোর্ড</a>
+            <a href="bookmarks.html" class="nav-link">🔖 বুকমার্কস</a>
+        </div>
+
+        <div class="nav-right">
+            <div class="user-menu-container">
+                <div class="nav-user-badge" id="userMenuBtn">
+                    <div class="user-avatar" id="userAvatar">M</div>
+                    <span class="nav-user-name" id="navUserName">ব্যবহারকারী</span>
+                    <span class="dropdown-icon">▼</span>
+                </div>
+
+                <div class="user-dropdown hidden" id="userDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-name" id="dropUserName">নাম</div>
+                        <div class="dropdown-email" id="dropUserEmail">ইমেইল</div>
+                    </div>
+                    <hr class="dropdown-divider">
+                    <button class="dropdown-item logout-item" id="dropdownLogoutBtn">
+                        <span class="icon">🚪</span> লগআউট
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <button class="nav-hamburger" id="navHamburger">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
+
+    <!-- Mobile Nav Menu -->
+    <div class="mobile-nav" id="mobileNav">
+        <a href="dashboard.html" class="mobile-nav-link">⊞ ড্যাশবোর্ড</a>
+        <a href="explore.html" class="mobile-nav-link">✦ এক্সপ্লোর</a>
+        <a href="leaderboard.html" class="mobile-nav-link">◈ লিডারবোর্ড</a>
+        <a href="bookmarks.html" class="mobile-nav-link">🔖 বুকমার্কস</a>
+        <button class="mobile-logout" id="mobileLogoutBtn">লগআউট</button>
+    </div>
 
     <main class="review-main">
         <div id="loadingState" class="loading-state">
@@ -32,8 +75,12 @@
                         <span class="badge" id="reviewDifficulty">—</span>
                         <span class="badge badge-date" id="reviewDate">—</span>
                     </div>
-                    <!-- Delete Button Added Here -->
-                    <button id="btnDeleteQuiz" class="btn-delete hidden">🗑️ কুইজটি ডিলিট করুন</button>
+
+                    <!-- Edit and Delete Buttons -->
+                    <div class="action-buttons">
+                        <button id="btnEditQuiz" class="btn-edit hidden">✏️ এডিট করুন</button>
+                        <button id="btnDeleteQuiz" class="btn-delete hidden">🗑️ ডিলিট করুন</button>
+                    </div>
                 </div>
                 <div class="review-score-box">
                     <div class="score-big" id="reviewScore">০/০</div>
@@ -63,7 +110,30 @@
         </div>
     </main>
 
+    <!-- Edit Modal Popup -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 1rem; color: var(--cyan);">কুইজ এডিট করুন</h2>
+
+            <label style="display:block; margin-bottom: 0.5rem; color: var(--text-dim);">বিষয় (Subject)</label>
+            <input type="text" id="editSubjectInput" class="edit-input" placeholder="Subject name">
+
+            <label style="display:block; margin: 1rem 0 0.5rem; color: var(--text-dim);">কাঠিন্য (Difficulty)</label>
+            <select id="editDifficultySelect" class="edit-input">
+                <option value="easy">সহজ (Easy)</option>
+                <option value="medium">মাঝারি (Medium)</option>
+                <option value="hard">কঠিন (Hard)</option>
+            </select>
+
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                <button id="btnSaveUpdate" class="btn-save">সেভ করুন</button>
+                <button id="btnCancelUpdate" class="btn-cancel">বাতিল</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/utils.js"></script>
     <script src="js/review.js"></script>
 </body>
+
 </html>

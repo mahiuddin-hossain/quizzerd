@@ -1,6 +1,6 @@
 /**
  * backend/routes/attempts.js
- * POST /api/attempts        → quiz attempt save করো
+ * POST /api/attempts        → quiz attempt save করো (এবং attempt_count আপডেট করো)
  * GET  /api/attempts/:id    → attempt review data আনো
  */
 
@@ -12,8 +12,7 @@ const router = express.Router();
 
 // =============================================
 // POST /api/attempts
-// Quiz শেষে attempt save করো
-// Body: { quiz_id, answers: [{question_id, selected_option, is_correct}] }
+// Quiz শেষে attempt save করো, Quiz count বাড়াও এবং User এর total_point আপডেট করো
 // =============================================
 router.post('/', verifyToken, async (req, res) => {
     const connection = await db.getConnection();
@@ -30,6 +29,7 @@ router.post('/', verifyToken, async (req, res) => {
 
         await connection.beginTransaction();
 
+        // ১. Attempts টেবিলে ডাটা সেভ করা
         const [attemptResult] = await connection.execute(
             `INSERT INTO attempts (user_id, quiz_id, score, total_questions, attempted_at)
              VALUES (?, ?, ?, ?, NOW())`,
@@ -37,6 +37,22 @@ router.post('/', verifyToken, async (req, res) => {
         );
         const attemptId = attemptResult.insertId;
 
+        // ২. Quizzes টেবিলে attempt_count ১ বাড়িয়ে দেওয়া
+        await connection.execute(
+            `UPDATE quizzes SET attempt_count = attempt_count + 1 WHERE id = ?`,
+            [quiz_id]
+        );
+
+        // ৩. 🔥 Users টেবিলে ইউজারের total_attempt_quizz এবং total_point আপডেট করা
+        await connection.execute(
+            `UPDATE users 
+             SET total_attempt_quizz = total_attempt_quizz + 1, 
+                 total_point = total_point + ? 
+             WHERE id = ?`,
+            [score, userId]
+        );
+
+        // ৪. Attempt Answers টেবিলে ইউজারের উত্তর সেভ করা
         for (const ans of answers) {
             await connection.execute(
                 `INSERT INTO attempt_answers (attempt_id, question_id, selected_option, is_correct)
@@ -48,7 +64,7 @@ router.post('/', verifyToken, async (req, res) => {
         await connection.commit();
 
         res.status(201).json({
-            message: 'Attempt saved.',
+            message: 'Attempt saved successfully.',
             attempt_id: attemptId,
             score,
             total_questions: totalQuestions
@@ -65,16 +81,16 @@ router.post('/', verifyToken, async (req, res) => {
 
 // =============================================
 // GET /api/attempts/:id
-// Attempt review — সব প্রশ্ন, অপশন, সঠিক/ভুল সহ
+// Attempt review — সব প্রশ্ন, অপশন, সঠিক/ভুল এবং creator_id সহ
 // =============================================
 router.get('/:id', verifyToken, async (req, res) => {
     try {
         const attemptId = parseInt(req.params.id);
         const userId = req.user.id;
 
-        // Attempt exists + ownership check
+        // 🔥 এখানে q.user_id AS creator_id যোগ করা হয়েছে
         const [attemptRows] = await db.execute(
-            `SELECT a.*, q.subject, q.difficulty
+            `SELECT a.*, q.subject, q.difficulty, q.user_id AS creator_id
              FROM attempts a
              JOIN quizzes q ON a.quiz_id = q.id
              WHERE a.id = ? AND a.user_id = ?`,
@@ -103,7 +119,6 @@ router.get('/:id', verifyToken, async (req, res) => {
             [attemptId, attempt.quiz_id]
         );
 
-        // প্রতিটি প্রশ্নের options আনো
         for (const q of questions) {
             const [options] = await db.execute(
                 `SELECT id, option_text FROM options WHERE question_id = ? ORDER BY id ASC`,
@@ -116,6 +131,7 @@ router.get('/:id', verifyToken, async (req, res) => {
             attempt: {
                 id: attempt.id,
                 quiz_id: attempt.quiz_id,
+                creator_id: attempt.creator_id, // 🔥 ফ্রন্টএন্ডে creator_id পাঠানো হচ্ছে
                 subject: attempt.subject,
                 difficulty: attempt.difficulty,
                 score: attempt.score,

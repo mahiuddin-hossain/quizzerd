@@ -1,3 +1,8 @@
+/**
+ * backend/routes/explore.js
+ * Explore page APIs (Optimized with Counter Caching / Denormalization)
+ */
+
 const express = require('express');
 const db = require('../db');
 const { verifyToken } = require('../middleware/auth');
@@ -10,16 +15,14 @@ const router = express.Router();
 // =============================================
 router.get('/trending', verifyToken, async (req, res) => {
     try {
+        // 🔥 Optimized Query: No JOIN with attempts table needed anymore!
         const query = `
-            SELECT q.id, q.subject, q.difficulty, q.created_at, u.username, 
-                   COUNT(a.id) as attempt_count,
+            SELECT q.id, q.subject, q.difficulty, q.created_at, q.attempt_count, u.username, 
                    (SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) as total_questions
             FROM quizzes q
             JOIN users u ON q.user_id = u.id
-            LEFT JOIN attempts a ON q.id = a.quiz_id
-            GROUP BY q.id
             HAVING total_questions > 0
-            ORDER BY attempt_count DESC, q.created_at DESC
+            ORDER BY q.attempt_count DESC, q.created_at DESC
             LIMIT 3
         `;
         const [rows] = await db.execute(query);
@@ -39,13 +42,12 @@ router.get('/quizzes', verifyToken, async (req, res) => {
         const search = req.query.search || '';
         const difficulty = req.query.difficulty || 'all';
 
+        // 🔥 Optimized Query
         let query = `
-            SELECT q.id, q.subject, q.difficulty, q.created_at, u.username, 
-                   COUNT(a.id) as attempt_count,
+            SELECT q.id, q.subject, q.difficulty, q.created_at, q.attempt_count, u.username, 
                    (SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) as total_questions
             FROM quizzes q
             JOIN users u ON q.user_id = u.id
-            LEFT JOIN attempts a ON q.id = a.quiz_id
             WHERE q.subject LIKE ?
         `;
         const queryParams = [`%${search}%`];
@@ -56,7 +58,6 @@ router.get('/quizzes', verifyToken, async (req, res) => {
         }
 
         query += `
-            GROUP BY q.id
             HAVING total_questions > 0
             ORDER BY q.created_at DESC
             LIMIT 20

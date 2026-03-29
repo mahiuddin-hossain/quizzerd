@@ -1,6 +1,6 @@
 /**
  * backend/routes/leaderboard.js
- * Quizzerd — Leaderboard API
+ * Quizzerd — Leaderboard API (Optimized)
  */
 
 const express = require('express');
@@ -12,20 +12,18 @@ const router = express.Router();
 // GET /api/leaderboard
 router.get('/', verifyToken, async (req, res) => {
     try {
-        // সব ইউজারের মোট স্কোর এবং মোট কুইজ খেলার সংখ্যা বের করা হচ্ছে
+        // 🔥 Optimized Query: No JOIN, SUM(), or GROUP BY needed!
         const [rows] = await db.execute(`
             SELECT 
-                u.id AS user_id, 
-                u.first_name, 
-                u.last_name, 
-                u.username,
-                COALESCE(SUM(a.score), 0) AS total_score,
-                COUNT(a.id) AS quizzes_played
-            FROM users u
-            LEFT JOIN attempts a ON u.id = a.user_id
-            GROUP BY u.id
-            HAVING total_score > 0
-            ORDER BY total_score DESC, quizzes_played ASC
+                id AS user_id, 
+                first_name, 
+                last_name, 
+                username,
+                total_point,
+                total_attempt_quizz
+            FROM users
+            WHERE total_point > 0
+            ORDER BY total_point DESC, total_attempt_quizz ASC
             LIMIT 50
         `);
 

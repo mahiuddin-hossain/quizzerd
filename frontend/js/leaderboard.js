@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// 🟢 User Info Display (Updated for Dropdown)
+// 🟢 User Info Display
 // ==========================================
 function initUserDisplay() {
     const user = getUser();
@@ -112,7 +112,8 @@ function renderPodium(topPlayers) {
 
     podiumOrder.forEach(player => {
         const initial = (player.first_name?.[0] || '?').toUpperCase();
-        const score = formatBanglaNumber(player.total_score);
+        // 🔥 Use new column name: total_point
+        const score = formatBanglaNumber(player.total_point);
         const isFirst = player.rank === 1;
 
         const card = document.createElement('div');
@@ -142,6 +143,8 @@ function renderList(restPlayers) {
         
         const row = document.createElement('div');
         row.className = `lb-row ${isMe ? 'current-user' : ''}`;
+        
+        // 🔥 Use new column names: total_point and total_attempt_quizz
         row.innerHTML = `
             <div class="lb-rank">#${formatBanglaNumber(actualRank)}</div>
             <div class="lb-avatar">${initial}</div>
@@ -150,8 +153,8 @@ function renderList(restPlayers) {
                 <div class="lb-username">@${escapeHtml(player.username)}</div>
             </div>
             <div class="lb-stats">
-                <div class="lb-score">${formatBanglaNumber(player.total_score)}</div>
-                <div class="lb-quizzes">${formatBanglaNumber(player.quizzes_played)} কুইজ</div>
+                <div class="lb-score">${formatBanglaNumber(player.total_point)}</div>
+                <div class="lb-quizzes">${formatBanglaNumber(player.total_attempt_quizz)} কুইজ</div>
             </div>
         `;
         container.appendChild(row);

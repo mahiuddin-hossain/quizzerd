@@ -12,82 +12,82 @@ const router = express.Router();
 
 // =============================================
 // GET /api/users/:id/stats
-// User এর dashboard stats নিয়ে আসো (Optimized)
+// সরাসরি users টেবিল থেকে ইউজারের পয়েন্ট এবং কুইজ কাউন্ট আনবে
 // =============================================
 router.get('/:id/stats', verifyToken, async (req, res) => {
     try {
         const userId = parseInt(req.params.id);
 
-        if (req.user.id !== userId) {
-            return res.status(403).json({ error: 'Unauthorized access.' });
-        }
-
-        // ✅ আপডেট: attempts টেবিল থেকে সরাসরি SUM এবং COUNT করা হচ্ছে
         const [rows] = await db.execute(
-            `SELECT 
-                COALESCE(SUM(score), 0) AS total_score,
-                COUNT(*) AS quizzes_played,
-                COALESCE(SUM(total_questions), 0) AS total_questions_sum
-             FROM attempts WHERE user_id = ?`,
+            'SELECT total_attempt_quizz, total_point FROM users WHERE id = ?',
             [userId]
         );
 
-        const { total_score, quizzes_played, total_questions_sum } = rows[0];
-
-        // Accuracy হিসাব (প্রতিটি প্রশ্নের মান ১০ ধরে)
-        // যেহেতু score এবং total_questions (মোট প্রশ্নের সংখ্যা) আমাদের কাছে আছে:
-        const totalPossibleScore = total_questions_sum * 10;
-        const accuracy = totalPossibleScore > 0
-            ? Math.round((total_score / totalPossibleScore) * 100)
-            : 0;
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
 
         res.json({
-            total_score: parseInt(total_score),
-            quizzes_played: quizzes_played,
-            accuracy: accuracy
+            total_attempt_quizz: rows[0].total_attempt_quizz || 0,
+            total_point: rows[0].total_point || 0
         });
 
     } catch (error) {
         console.error('Stats fetch error:', error);
-        res.status(500).json({ error: 'পরিসংখ্যান লোড করতে সমস্যা হয়েছে।' });
+        res.status(500).json({ error: 'স্ট্যাটাস লোড করতে সমস্যা হয়েছে।' });
     }
 });
 
 // =============================================
 // GET /api/users/:id/quizzes
-// User এর সাম্প্রতিক quiz attempts নিয়ে আসো
+// ইউজারের রিসেন্ট কুইজ হিস্ট্রি আনবে (কুইজের মালিকের নাম সহ)
 // =============================================
 router.get('/:id/quizzes', verifyToken, async (req, res) => {
     try {
         const userId = parseInt(req.params.id);
 
-        if (req.user.id !== userId) {
-            return res.status(403).json({ error: 'Unauthorized access.' });
-        }
+        const [rows] = await db.execute(`
+            SELECT a.id AS attempt_id, a.score, a.total_questions, a.attempted_at,
+                   q.id AS quiz_id, q.subject, q.difficulty, q.user_id AS creator_id,
+                   u.username AS creator_name
+            FROM attempts a
+            JOIN quizzes q ON a.quiz_id = q.id
+            JOIN users u ON q.user_id = u.id
+            WHERE a.user_id = ?
+            ORDER BY a.attempted_at DESC
+            LIMIT 10
+        `, [userId]);
 
-        // ✅ আপডেট: সাব-কুয়েরির বদলে সরাসরি a.total_questions ব্যবহার করা হয়েছে
-        const [quizzes] = await db.execute(
-            `SELECT 
-                a.id AS attempt_id,
-                a.score,
-                a.total_questions,
-                a.attempted_at,
-                q.id AS quiz_id,
-                q.subject,
-                q.difficulty 
-             FROM attempts a 
-             JOIN quizzes q ON a.quiz_id = q.id 
-             WHERE a.user_id = ? 
-             ORDER BY a.attempted_at DESC 
-             LIMIT 10`,
-            [userId]
-        );
-
-        res.json({ quizzes });
-
+        res.json({ quizzes: rows });
     } catch (error) {
-        console.error('User quizzes fetch error:', error);
-        res.status(500).json({ error: 'কুইজ তালিকা লোড করতে সমস্যা হয়েছে।' });
+        console.error('Quizzes history fetch error:', error);
+        res.status(500).json({ error: 'কুইজ হিস্ট্রি লোড করতে সমস্যা হয়েছে।' });
+    }
+});
+
+// =============================================
+// GET /api/users/:id/history
+// ইউজারের সব কুইজ হিস্ট্রি আনবে (কোনো লিমিট ছাড়া)
+// =============================================
+router.get('/:id/history', verifyToken, async (req, res) => {
+    try {
+        const userId = parseInt(req.params.id);
+
+        const [rows] = await db.execute(`
+            SELECT a.id AS attempt_id, a.score, a.total_questions, a.attempted_at,
+                   q.id AS quiz_id, q.subject, q.difficulty, q.user_id AS creator_id,
+                   u.username AS creator_name
+            FROM attempts a
+            JOIN quizzes q ON a.quiz_id = q.id
+            JOIN users u ON q.user_id = u.id
+            WHERE a.user_id = ?
+            ORDER BY a.attempted_at DESC
+        `, [userId]);
+
+        res.json({ quizzes: rows });
+    } catch (error) {
+        console.error('History fetch error:', error);
+        res.status(500).json({ error: 'হিস্ট্রি লোড করতে সমস্যা হয়েছে।' });
     }
 });
 

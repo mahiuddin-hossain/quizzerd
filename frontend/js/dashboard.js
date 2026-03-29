@@ -91,8 +91,9 @@ function initUserDisplay() {
     if (dropUserEmail) dropUserEmail.textContent = user.email;
 }
 
+
 // =============================================
-// DASHBOARD STATS
+// DASHBOARD STATS (Updated)
 // =============================================
 async function loadStats() {
     const user = getUser();
@@ -101,13 +102,27 @@ async function loadStats() {
     try {
         const data = await apiFetch(`/api/users/${user.id}/stats`);
 
+        // ডাটাবেস থেকে পাওয়া ভ্যালু
+        const points = data.total_point || 0;
+        const quizzes = data.total_attempt_quizz || 0;
+
+        // সঠিক উত্তরের পার্সেন্টেজ ক্যালকুলেশন
+        // প্রতি কুইজে গড়ে ১০০ পয়েন্ট (১০টি প্রশ্ন * ১০ পয়েন্ট) ধরে হিসাব করা হলো:
+        // সূত্র: (মোট অর্জিত পয়েন্ট / মোট সম্ভাব্য পয়েন্ট) * ১০০
+        let accuracy = 0;
+        if (quizzes > 0) {
+            accuracy = Math.round(points / quizzes); 
+            if (accuracy > 100) accuracy = 100; // সেফটি চেক
+        }
+
         const statScore = document.getElementById('statScore');
         const statQuizzes = document.getElementById('statQuizzes');
         const statCorrect = document.getElementById('statCorrect');
 
-        if (statScore) statScore.textContent = formatBanglaNumber(data.total_score || 0);
-        if (statQuizzes) statQuizzes.textContent = formatBanglaNumber(data.quizzes_played || 0);
-        if (statCorrect) statCorrect.textContent = `${data.accuracy || 0}%`;
+        // UI তে ডাটা সেট করা (বাংলা নাম্বারে কনভার্ট করে)
+        if (statScore) statScore.textContent = formatBanglaNumber(points);
+        if (statQuizzes) statQuizzes.textContent = formatBanglaNumber(quizzes);
+        if (statCorrect) statCorrect.textContent = `${formatBanglaNumber(accuracy)}%`;
 
     } catch (err) {
         console.error('Stats load error:', err);
@@ -333,6 +348,9 @@ async function loadRecentQuizzes() {
     }
 }
 
+// =============================================
+// BUILD RECENT ITEM (Updated with Creator Name)
+// =============================================
 function buildRecentItem(q) {
     const diffClass = {
         easy: 'badge-easy',
@@ -353,13 +371,28 @@ function buildRecentItem(q) {
 
     const dateStr = formatDate(q.attempted_at);
 
+    // 🟢 Creator Name Logic
+    const currentUser = getUser();
+    let creatorLabel = '';
+    
+    // যদি কুইজটি এই ইউজার নিজেই তৈরি করে থাকে
+    if (currentUser && currentUser.id === q.creator_id) {
+        creatorLabel = `<span style="color: var(--cyan); font-size: 0.8rem; font-weight: 600;">✦ Created by you</span>`;
+    } else {
+        // অন্য কেউ তৈরি করলে তার নাম দেখাবে
+        creatorLabel = `<span style="color: var(--text-dim); font-size: 0.8rem;">👤 By ${escapeHtml(q.creator_name)}</span>`;
+    }
+
     return `
     <a class="recent-item" href="review.html?attempt_id=${q.attempt_id}">
         <div class="recent-left">
             <div class="recent-icon">${subjectIcon}</div>
             <div class="recent-info">
                 <h4>${escapeHtml(q.subject)}</h4>
-                <div class="recent-meta">
+                <div class="recent-meta" style="margin-top: 4px;">
+                    ${creatorLabel}
+                </div>
+                <div class="recent-meta" style="margin-top: 6px;">
                     <span class="recent-badge ${diffClass}">${diffLabel}</span>
                     <span>${q.total_questions}টি প্রশ্ন</span>
                     <span>${dateStr}</span>
